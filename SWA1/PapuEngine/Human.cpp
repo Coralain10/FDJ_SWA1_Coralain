@@ -7,10 +7,11 @@ Human::Human()
 {
 }
 
-void Human::init(float speed, glm::vec2 position, std::string texturePath) {
+void Human::init(float speed, glm::vec2 position, std::string texturePath, ColorClasses colorType) {
 	_speed = speed;
 	color.set(255, 255, 255, 255); //185,0,0
 	_position = position;
+	_colorType = colorType;
 	_texturePath = texturePath;
 	static std::mt19937 randomEngine(time(nullptr));
 	static std::uniform_real_distribution<float>randDir(-1.0f, 1.0f);

@@ -36,7 +36,7 @@ void GamePlayScreen::build() {
 }
 void GamePlayScreen::destroy() {
 	background = nullptr;
-	for (int i = _humans.size() - 1; i >= 0; i--) _humans[i] = nullptr;
+	for (int i = _enemys.size() - 1; i >= 0; i--) _enemys[i] = nullptr;
 }
 void GamePlayScreen::onExit() {
 }
@@ -75,7 +75,7 @@ void GamePlayScreen::draw() {
 	background->draw();
 	_levels[_currenLevel]->draw();
 	_player->draw(_spriteBatch);
-	for (Human* h : _humans) h->draw(_spriteBatch);
+	for (Human* enemy : _enemys) enemy->draw(_spriteBatch);
 	drawUI();
 
 	_spriteBatch.end();
@@ -113,23 +113,34 @@ void GamePlayScreen::spamEnemy()
 
 	//rango de error 0.005
 	if (timer < unsigned int(timer) + 0.005 && unsigned int(timer) % 2 == 0) {
-		Human* h = new Human();
+		Human* enemy = new Human();
+
 		glm::vec2 pos(randPosX(randomEngine) * TILE_WIDTH,
 			randPosY(randomEngine) * TILE_WIDTH);
 		std::string color = "";
+		ColorClasses ct;
+
 		switch (rand() % 3)
 		{
-			case 0: color = "Textures/Personajes/amarillo.png"; break;
-			case 1: color = "Textures/Personajes/rojo.png"; break;
-			case 2: color = "Textures/Personajes/verde.png"; break;
-			default: cout << "fuera" << endl; break;
+			case 1:
+				ct = ColorClasses::ENEMY_RED;
+				color = "Textures/Personajes/rojo.png";
+				break;
+			case 2:
+				ct = ColorClasses::ENEMY_GREEN;
+				color = "Textures/Personajes/verde.png";
+				break;
+			default:
+				ct = ColorClasses::ENEMY_YELLOW;
+				color = "Textures/Personajes/amarillo.png";
+				break;
 		}
-		h->init(0.4f, pos, color);
-		_humans.push_back(h);
+
+		enemy->init(0.4f, pos, color, ct);
+		_enemys.push_back(enemy);
 		times_checked += 1;
 		//sin el margen de error, en 8 segundos entró 486 veces
 	}
-	//entra varias veces a este if, intento reducir ello
 }
 
 void GamePlayScreen::update() {
@@ -143,12 +154,41 @@ void GamePlayScreen::update() {
 }
 
 void GamePlayScreen::updateAgents() {
-	_player->update(_levels[_currenLevel]->getLevelData(), _humans);
+	_player->update(_levels[_currenLevel]->getLevelData(), _enemys);
 
-	for (size_t i = 0; i < _humans.size(); i++)
+	for (int i = _enemys.size() - 1; i >= 0; i--)
 	{
-		if (_humans[i]->collideWithAgent(_player)) levelState = LevelState::LOST;
-		_humans[i]->update(_levels[_currenLevel]->getLevelData(), _humans);
+		if (_enemys[i]->collideWithAgent(_player)) {
+			ColorClasses ct = _enemys[i]->_colorType;
+
+			delete _enemys[i];
+			_enemys[i] = _enemys.back();
+			_enemys.pop_back();
+
+			if (_inputManager.isKeyDown(SDLK_q)) {
+				if (ct == ColorClasses::ENEMY_YELLOW) puntaje += 10;
+				if (ct == ColorClasses::ENEMY_RED) puntaje -= 10;
+				if (ct == ColorClasses::ENEMY_GREEN) puntaje -= 20;
+			}
+			if (_inputManager.isKeyDown(SDLK_w)) {
+				if (ct == ColorClasses::ENEMY_RED) puntaje += 20;
+				if (ct == ColorClasses::ENEMY_GREEN ||
+					ct == ColorClasses::ENEMY_YELLOW) puntaje -= 15;
+			}
+			if (_inputManager.isKeyDown(SDLK_e)) {
+				if (ct == ColorClasses::ENEMY_GREEN) puntaje *= 2;
+				if (ct == ColorClasses::ENEMY_RED) puntaje -= 5;
+				if (ct == ColorClasses::ENEMY_YELLOW) puntaje /= 2;
+			}
+		}
+		else {
+			_enemys[i]->update(_levels[_currenLevel]->getLevelData(), _enemys);
+		}
+	}
+
+	if (puntaje < 0) {
+		_currentState = ScreenState::CHANGE_NEXT;
+		levelState = LevelState::LOST;
 	}
 }
 

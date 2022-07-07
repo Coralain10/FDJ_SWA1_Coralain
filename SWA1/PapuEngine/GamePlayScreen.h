@@ -31,7 +31,7 @@ private:
 	InputManager _inputManager;
 	SpriteFont* _spriteFont;
 	vector<Level*> _levels;
-	vector<Human*>  _humans;
+	vector<Human*>  _enemys;
 	Background* background;
 	Player* _player;
 	LevelState levelState;
