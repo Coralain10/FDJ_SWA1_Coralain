@@ -26,8 +26,8 @@ void App::addScreens() {
 		_gameOverScreen.get());
 
 	_screenList->setScreen(
-		_gamePlayScreen->getIndex());
-		//_menuScreen->getIndex());
+		_menuScreen->getIndex());
+		//_gamePlayScreen->getIndex());
 }
 
 void App::onExit() {

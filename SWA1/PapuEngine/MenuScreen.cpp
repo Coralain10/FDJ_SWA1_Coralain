@@ -37,6 +37,7 @@ void MenuScreen::onEntry()
 	_spriteBatch.init();
 	_camera.init(_window->getScreenWidth(),
 		_window->getScreenHeight());
+
 	spriteFont = new SpriteFont("Fonts/JosefinSans-Regular.ttf", 32);
 }
 

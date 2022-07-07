@@ -112,7 +112,8 @@ void GameOverScreen::checkInput()
 		if (inputManager.isKeyPressed(SDL_BUTTON_LEFT)) {
 			//presione click;
 			//glm::vec2 mouseCoords = _camera.convertScreenToWorl(inputManager.getMouseCoords());
-			std::cout << "Para el otro año sera :D";
+			setlocale(LC_CTYPE, "Spanish");
+			std::cout << "Para el otro año será :D" << endl;
 		}
 	}
 }
