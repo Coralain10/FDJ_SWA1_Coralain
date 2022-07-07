@@ -6,7 +6,6 @@
 #include "ResourceManager.h"
 #include "PapuEngine.h"
 #include <random>
-#include <ctime>
 #include "ScreenIndices.h"
 
 
@@ -31,7 +30,6 @@ void GamePlayScreen::build() {
 
 	_player = new Player();
 	_player->init(2.0f, _levels[_currenLevel]->getPlayerPosition(), &_inputManager, &_camera, "Textures/Personajes/player.png");
-	//_humans.push_back(_player);
 
 	_spriteBatch.init();
 
@@ -75,6 +73,8 @@ void GamePlayScreen::onEntry() {
 	_camera.init(_window->getScreenWidth(), _window->getScreenHeight());
 	_window->setGLColor(0.195f, 0.273, 0.215); //50, 70, 55  1.0f, 1.0f, 0.0f
 	_spriteFont = new SpriteFont("Fonts/JosefinSans-Regular.ttf", 24);
+
+	startTime = std::clock();
 }
 
 void GamePlayScreen::draw() {
@@ -113,12 +113,11 @@ void GamePlayScreen::drawUI() {
 	Color color{ 255, 252, 187, 255 };
 	char buffer[256];
 
-	//auto elapsed = (std::chrono::high_resolution_clock::now() - startTime).count();
-	//timer = unsigned long((elapsed / 10000000) / 30); //frequency = 30
-	//sprintf_s(buffer, "Tiempo: %d", timer);
-	//_spriteFont->draw(_spriteBatch, buffer,
-	//	_camera.getPosition() + glm::vec2(-_window->getScreenWidth() / 2 + 24, _window->getScreenHeight() / 2 - 48),
-	//	glm::vec2(1), 0.0f, color);
+	timer = unsigned long( (std::clock() - startTime) / (double)CLOCKS_PER_SEC );
+	sprintf_s(buffer, "%ds", timer);
+	_spriteFont->draw(_spriteBatch, buffer,
+		_camera.getPosition() + glm::vec2(-_window->getScreenWidth() / 2 + 24, _window->getScreenHeight() / 2 - 48),
+		glm::vec2(1), 0.0f, color);
 
 	sprintf_s(buffer, "Puntaje: %d", puntaje);
 	_spriteFont->draw(_spriteBatch, buffer,

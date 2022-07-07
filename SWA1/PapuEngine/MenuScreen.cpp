@@ -107,9 +107,6 @@ void MenuScreen::checkInput()
 			break;
 		}
 
-		if (_inputManager.isKeyDown(SDLK_SPACE)) {
-			_currentState = ScreenState::CHANGE_NEXT;
-		}
 		if (_inputManager.isKeyPressed(SDL_BUTTON_LEFT)) {
 			//presione click;
 			//glm::vec2 mouseCoords = _camera.convertScreenToWorl(inputManager.getMouseCoords());

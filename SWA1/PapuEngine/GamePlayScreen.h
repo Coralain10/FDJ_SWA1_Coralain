@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL\SDL.h>
+#include <ctime>
 #include "IGameScreen.h"
 #include "Camera2D.h"
 #include "GLS_Program.h"
@@ -23,8 +24,8 @@ enum class LevelState { WON, LOST, FINISHED, PLAYING, PAUSE };
 class GamePlayScreen : public IGameScreen
 {
 private:
-	//std::chrono::steady_clock::time_point startTime;
-	unsigned long timer; //std::chrono::duration<double> timer;
+	std::clock_t startTime;
+	unsigned long timer;
 	int puntaje;
 	GLS_Program _program;
 	Camera2D _camera;
