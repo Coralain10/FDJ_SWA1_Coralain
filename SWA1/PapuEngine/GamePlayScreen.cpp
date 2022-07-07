@@ -31,7 +31,7 @@ void GamePlayScreen::build() {
 
 	_player = new Player();
 	_player->init(2.0f, _levels[_currenLevel]->getPlayerPosition(), &_inputManager, &_camera, "Textures/Personajes/player.png");
-	_humans.push_back(_player);
+	//_humans.push_back(_player);
 
 	_spriteBatch.init();
 
@@ -126,35 +126,18 @@ void GamePlayScreen::drawUI() {
 		glm::vec2(1), 0.0f, color);
 }
 
-void GamePlayScreen::drawAgents() {
-	_levels[_currenLevel]->draw();
-
-	if (!_player->hasKey()) _key->draw(_spriteBatch);
-	_door->draw(_spriteBatch);//if (!_door->isOpen()) 
-
-	for (size_t i = 0; i < _humans.size(); i++)
-	{
-		_humans[i]->draw(_spriteBatch);
-
-	}
-
-	for (size_t i = 0; i < _zombies.size(); i++)
-	{
-		_zombies[i]->draw(_spriteBatch);
-	}
-}
-
 void GamePlayScreen::update() {
 	checkInput();
 	draw();
 	_camera.update();
 	updateAgents();
-	_inputManager.update();
-	if (levelState == LevelState::PLAYING) _camera.setPosition(_player->getPosition());
-	else _camera.setPosition(glm::vec2(0.0f, 0.0f));
+	//_inputManager.update();// ya hace este update en el Game::run
+	_camera.setPosition(_player->getPosition());
 }
 
 void GamePlayScreen::updateAgents() {
+	_player->update(_levels[_currenLevel]->getLevelData(),
+		_humans, _zombies);
 
 	for (size_t i = 0; i < _humans.size(); i++)
 	{
@@ -170,7 +153,7 @@ void GamePlayScreen::updateAgents() {
 
 		if (_zombies[i]->collideWithAgent(_player)) levelState = LevelState::LOST;
 
-		for (size_t j = 1; j < _humans.size(); j++)
+		for (size_t j = 0; j < _humans.size(); j++)
 		{
 			if (_zombies[i]->collideWithAgent(_humans[j])) {
 				_zombies.push_back(new Zombie);
@@ -212,14 +195,6 @@ void GamePlayScreen::checkInput() {
 			_inputManager.releaseKey(event.button.button);
 			break;
 		}
-
-		//if (_inputManager.isKeyPressed(SDL_BUTTON_LEFT)) {
-		//	//presione click;
-		//	glm::vec2 mouseCoords = _camera.convertScreenToWorl(_inputManager.getMouseCoords());
-		//	if (backButton->click(mouseCoords)) {
-		//		_currentState = ScreenState::CHANGE_NEXT;
-		//	}
-		//}
 	}
 }
 

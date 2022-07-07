@@ -60,8 +60,6 @@ public:
 	virtual int getPreviousScreen() const override;
 
 	void checkInput();
-	void drawAgents();
-	void drawBackground();
 	void drawUI();
 };
 
