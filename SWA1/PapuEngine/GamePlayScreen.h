@@ -20,8 +20,9 @@ class GamePlayScreen : public IGameScreen
 {
 private:
 	std::clock_t startTime;
-	double timer;
-	int times_checked;
+	double timer; //Crear una variable Timer que se INCREMENTE cada un segundo, este valor debe ser mostrado en la caja de texto Tiempo
+	unsigned int maxTime;
+	//int times_checked;
 	int puntaje;
 	GLS_Program _program;
 	Camera2D _camera;

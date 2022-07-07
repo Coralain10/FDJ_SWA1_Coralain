@@ -1,11 +1,12 @@
 #include "GameOverScreen.h"
 #include "ScreenIndices.h"
+#include "Error.h"
+#include <fstream>
 #include <iostream>
 
 GameOverScreen::GameOverScreen(Window* window) :_window(window)
 {
 	_screenIndex = SCREEN_INDEX_GAME_OVER;
-	//TO DO: LEER ARCHIVO CON PUNTAJE
 }
 
 GameOverScreen::~GameOverScreen()
@@ -38,6 +39,14 @@ void GameOverScreen::onEntry()
 	_camera.init(_window->getScreenWidth(),
 		_window->getScreenHeight());
 	spriteFont = new SpriteFont("Fonts/JosefinSans-Regular.ttf", 32);
+
+	//LEER ARCHIVO CON EL PUNTAJE
+	std::ifstream file;
+	file.open("Levels/levelScore.txt");
+	if (file.fail()) {
+		fatalError("failed to opem levelScore");
+	}
+	file >> puntaje;
 }
 
 void GameOverScreen::draw()
@@ -63,7 +72,7 @@ void GameOverScreen::draw()
 
 	Color color{ 255, 252, 187, 255 };
 	char buffer[256];
-	sprintf_s(buffer, "Obtuviste %d", 100);
+	sprintf_s(buffer, "Obtuviste %d", puntaje);
 	spriteFont->draw(_spriteBatch, buffer, glm::vec2(-100, 50), glm::vec2(1), 0.0f, color);
 
 	_spriteBatch.end();
@@ -103,7 +112,7 @@ void GameOverScreen::checkInput()
 		if (inputManager.isKeyPressed(SDL_BUTTON_LEFT)) {
 			//presione click;
 			//glm::vec2 mouseCoords = _camera.convertScreenToWorl(inputManager.getMouseCoords());
-			std::cout << "Para el otro año será :D";
+			std::cout << "Para el otro año sera :D";
 		}
 	}
 }

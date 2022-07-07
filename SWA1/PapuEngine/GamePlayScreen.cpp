@@ -1,13 +1,13 @@
 #include "GamePlayScreen.h"
 #include "Game.h"
-
 #include "ImageLoader.h"
 #include <iostream>
 #include "ResourceManager.h"
 #include "PapuEngine.h"
 #include <random>
 #include "ScreenIndices.h"
-
+#include <fstream>
+#include "Error.h"
 
 
 GamePlayScreen::GamePlayScreen(Window* window):
@@ -16,7 +16,8 @@ GamePlayScreen::GamePlayScreen(Window* window):
 	_currenLevel = 0;
 	_screenIndex = SCREEN_INDEX_GAMEPLAY;
 	levelState = LevelState::PLAYING;
-	times_checked = 0;
+	//times_checked = 0;
+	maxTime = 30;
 }
 
 
@@ -34,13 +35,15 @@ void GamePlayScreen::build() {
 
 	_spriteBatch.init();
 }
+
 void GamePlayScreen::destroy() {
 	background = nullptr;
 	for (int i = _enemys.size() - 1; i >= 0; i--) _enemys[i] = nullptr;
-	//TO DO: ESCRIBIR ARCHIVO CON PUNTAJE
 }
+
 void GamePlayScreen::onExit() {
 }
+
 void GamePlayScreen::onEntry() {
 	_program.compileShaders("Shaders/colorShaderVert.txt",
 		"Shaders/colorShaderFrag.txt");
@@ -93,7 +96,7 @@ void GamePlayScreen::drawUI() {
 	char buffer[256];
 
 	timer = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
-	sprintf_s(buffer, "%ds", unsigned int(timer));
+	sprintf_s(buffer, "%ds / %ds", unsigned int(timer), maxTime);
 	_spriteFont->draw(_spriteBatch, buffer,
 		_camera.getPosition() + glm::vec2(-_window->getScreenWidth() / 2 + 24, _window->getScreenHeight() / 2 - 48),
 		glm::vec2(1), 0.0f, color);
@@ -139,7 +142,7 @@ void GamePlayScreen::spamEnemy()
 
 		enemy->init(0.4f, pos, color, ct);
 		_enemys.push_back(enemy);
-		times_checked += 1;
+		//times_checked += 1;
 		//sin el margen de error, en 8 segundos entró 486 veces
 	}
 }
@@ -152,6 +155,11 @@ void GamePlayScreen::update() {
 	//_inputManager.update();// ya hace este update en el Game::run
 	spamEnemy();
 	_camera.setPosition(_player->getPosition());
+
+	if (maxTime - unsigned int(timer) <= 0 || puntaje < 0) {
+		_currentState = ScreenState::CHANGE_NEXT;
+		levelState = LevelState::LOST;
+	}
 }
 
 void GamePlayScreen::updateAgents() {
@@ -186,11 +194,6 @@ void GamePlayScreen::updateAgents() {
 			_enemys[i]->update(_levels[_currenLevel]->getLevelData(), _enemys);
 		}
 	}
-
-	if (puntaje < 0) {
-		_currentState = ScreenState::CHANGE_NEXT;
-		levelState = LevelState::LOST;
-	}
 }
 
 void GamePlayScreen::checkInput() {
@@ -223,7 +226,15 @@ void GamePlayScreen::checkInput() {
 	}
 }
 
-int GamePlayScreen::getNextScreen() const{ 
+int GamePlayScreen::getNextScreen() const{
+	//ESCRIBIR ARCHIVO CON PUNTAJE
+	std::ofstream file;
+	file.open("Levels/levelScore.txt", ios::out);
+	if (file.fail()) {
+		fatalError("failed to opem levelScore");
+	}
+	file << puntaje;
+
 	return SCREEN_INDEX_GAME_OVER;
 
 };
