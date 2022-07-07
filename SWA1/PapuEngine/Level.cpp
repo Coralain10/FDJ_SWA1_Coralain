@@ -32,7 +32,7 @@ void Level::parseLevel() {
 	_spriteBatch.init();
 	_spriteBatch.begin();
 
-	//glm::vec4 uvRect(0.0f, 0.0f, 1.0f, 1.0f);
+	glm::vec4 uvRect(0.0f, 0.0f, 1.0f, 1.0f);
 	Color color{ 255, 255, 255, 255 };
 
 	for (int y = 0; y < _levelData.size(); y++)
@@ -44,19 +44,21 @@ void Level::parseLevel() {
 							   TILE_WIDTH, TILE_WIDTH);
 			switch (tile)
 			{
-			case 'R': //green??
+			case 'R': _spriteBatch.draw(destRect, uvRect,
+				ResourceManager::getTexture("Textures/LevelMap/red_bricks.png").id,
+				0.0f, color); //red bricks
 			case 'B':
-				_spriteBatch.draw(destRect, glm::vec4(0.0f, 0.5f, 1.0f, 0.25f),
+				_spriteBatch.draw(destRect, uvRect,
 					ResourceManager::getTexture("Textures/LevelMap/red_bricks.png").id,
 					0.0f,color); //red bricks
 				break;
 			case 'G':
-				_spriteBatch.draw(destRect, glm::vec4(0.0f, 0.25f, 1.0f, 0.25f),
+				_spriteBatch.draw(destRect, uvRect,
 					ResourceManager::getTexture("Textures/LevelMap/glass.png").id,
 					0.0f, color); //glass
 				break;
 			case 'L':
-				_spriteBatch.draw(destRect, glm::vec4(0.0f, 0.75f, 1.0f, 0.25f),
+				_spriteBatch.draw(destRect, uvRect,
 					ResourceManager::getTexture("Textures/LevelMap/light_bricks.png").id,
 					0.0f, color); //light bricks
 				break;

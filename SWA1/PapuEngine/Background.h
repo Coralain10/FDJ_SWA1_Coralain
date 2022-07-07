@@ -14,10 +14,15 @@ private:
 	int height;
 	int x;
 	int y;
+	SpriteBacth _spriteBatch;
 public:
 
 	Background(std::string _path, Window* window);
 	~Background();
-	void draw(SpriteBacth& spriteBatch);
+	void draw();
+	void setPosition(glm::vec2 position) {
+		x = position.x;
+		y = position.y;
+	};
 };
 

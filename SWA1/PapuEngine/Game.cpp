@@ -32,7 +32,7 @@ void Game::draw() {
 	}
 }
 bool Game::initSystems() {
-	_window.create("Plataformer", 1280, 720, 0);
+	_window.create("Plataformer", 960, 540, 0);
 	return true;
 }
 

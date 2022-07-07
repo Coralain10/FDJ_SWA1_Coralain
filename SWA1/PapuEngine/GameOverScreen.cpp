@@ -58,7 +58,7 @@ void GameOverScreen::draw()
 
 	_spriteBatch.begin();
 
-	background->draw(_spriteBatch);
+	background->draw();
 	char buffer[256];
 	sprintf_s(buffer, "HOLA %d", 100);
 	Color color;

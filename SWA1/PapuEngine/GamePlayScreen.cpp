@@ -76,6 +76,7 @@ void GamePlayScreen::onEntry() {
 	_window->setGLColor(0.195f, 0.273, 0.215); //50, 70, 55  1.0f, 1.0f, 0.0f
 	_spriteFont = new SpriteFont("Fonts/JosefinSans-Regular.ttf", 24);
 }
+
 void GamePlayScreen::draw() {
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -93,7 +94,7 @@ void GamePlayScreen::draw() {
 
 	_spriteBatch.begin();
 
-	background->draw(_spriteBatch);
+	background->draw();
 	_levels[_currenLevel]->draw();
 	_player->draw(_spriteBatch);
 	//for (Human* h : _humans) h->draw(_spriteBatch);
@@ -108,14 +109,21 @@ void GamePlayScreen::draw() {
 }
 
 void GamePlayScreen::drawUI() {
+	background->setPosition(_camera.getPosition() + glm::vec2(-_window->getScreenWidth() / 2 -4, -_window->getScreenHeight() / 2 -4));
+	Color color{ 255, 252, 187, 255 };
 	char buffer[256];
-	if (!_player->hasKey()) sprintf_s(buffer, "No tienes la llave!");
-	else sprintf_s(buffer, "Busca la salida!");
-	Color color;
-	color.set(255, 252, 161, 255);
-	_spriteFont->draw(_spriteBatch, buffer, _camera.getPosition() + glm::vec2(- _window->getScreenWidth() / 2.1, _window->getScreenHeight() / 2.5), glm::vec2(1), 0.0f, color);
-	/*backButton->setPosition( _camera.getPosition().x + _window->getScreenWidth() / 2 - 64, - _camera.getPosition().y - _window->getScreenHeight() / 2 + 64);
-	backButton->draw(_spriteBatch);*/
+
+	//auto elapsed = (std::chrono::high_resolution_clock::now() - startTime).count();
+	//timer = unsigned long((elapsed / 10000000) / 30); //frequency = 30
+	//sprintf_s(buffer, "Tiempo: %d", timer);
+	//_spriteFont->draw(_spriteBatch, buffer,
+	//	_camera.getPosition() + glm::vec2(-_window->getScreenWidth() / 2 + 24, _window->getScreenHeight() / 2 - 48),
+	//	glm::vec2(1), 0.0f, color);
+
+	sprintf_s(buffer, "Puntaje: %d", puntaje);
+	_spriteFont->draw(_spriteBatch, buffer,
+		_camera.getPosition() + glm::vec2(_window->getScreenWidth() / 2 - 192, _window->getScreenHeight() / 2 - 48),
+		glm::vec2(1), 0.0f, color);
 }
 
 void GamePlayScreen::drawAgents() {
@@ -166,7 +174,7 @@ void GamePlayScreen::updateAgents() {
 		{
 			if (_zombies[i]->collideWithAgent(_humans[j])) {
 				_zombies.push_back(new Zombie);
-				_zombies.back()->init(0.4f, _humans[j]->getPosition(), "Textures/GamePlay/tilemap_characters.png");
+				_zombies.back()->init(0.4f, _humans[j]->getPosition(), "Textures/Personajes/verde.png");
 				_zombies.back()->setUvRect(0.0f, 0.75f, 1.0f, 0.25f);
 
 				delete _humans[j];

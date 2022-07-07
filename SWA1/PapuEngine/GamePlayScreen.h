@@ -23,6 +23,9 @@ enum class LevelState { WON, LOST, FINISHED, PLAYING, PAUSE };
 class GamePlayScreen : public IGameScreen
 {
 private:
+	//std::chrono::steady_clock::time_point startTime;
+	unsigned long timer; //std::chrono::duration<double> timer;
+	int puntaje;
 	GLS_Program _program;
 	Camera2D _camera;
 	Window* _window = nullptr;

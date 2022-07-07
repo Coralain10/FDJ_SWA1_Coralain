@@ -59,7 +59,7 @@ void MenuScreen::draw()
 
 	_spriteBatch.begin();
 
-	background->draw(_spriteBatch);
+	background->draw();
 	Color color{ 255, 252, 187, 255 };
 	spriteFont->draw(_spriteBatch, "Examen Final Bica Corazon", glm::vec2(-210, 80), glm::vec2(1), 0.0f, color);
 	spriteFont->draw(_spriteBatch, "Carolain Anto Chavez", glm::vec2(-130, 40), glm::vec2(0.8), 0.0f, color);
