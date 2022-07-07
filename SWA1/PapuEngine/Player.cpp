@@ -16,9 +16,7 @@ void Player::init(float speed, glm::vec2 position, InputManager* inputManager, C
 	color.set(255, 255, 255, 255);
 }
 void Player::update(const std::vector<std::string>& levelData,
-	std::vector<Human*>& humans,
-	std::vector<Zombie*>& zombies
-	) {
+	std::vector<Human*>& humans) {
 	if (_inputManager->isKeyDown(SDLK_w)) {
 		_position.y += _speed;
 	}

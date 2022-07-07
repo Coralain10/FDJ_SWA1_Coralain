@@ -27,7 +27,6 @@ public:
 
 	void init(float speed, glm::vec2 position, InputManager* inputManager, Camera2D* camera, std::string texturePath);
 	void update(const std::vector<std::string>& levelData,
-		std::vector<Human*>& humans,
-		std::vector<Zombie*>& zombies );
+		std::vector<Human*>& humans );
 };
 

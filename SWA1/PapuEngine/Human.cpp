@@ -23,8 +23,7 @@ void Human::init(float speed, glm::vec2 position, std::string texturePath) {
 }
 
 void Human::update(const std::vector<std::string>& levelData,
-	std::vector<Human*>& humans,
-	std::vector<Zombie*>& zombies) {
+	std::vector<Human*>& humans) {
 
 	static std::mt19937 randomEngine(time(nullptr));
 	static std::uniform_real_distribution<float>randRotate(-40.0f, 40.0f);

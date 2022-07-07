@@ -16,6 +16,7 @@ GamePlayScreen::GamePlayScreen(Window* window):
 	_currenLevel = 0;
 	_screenIndex = SCREEN_INDEX_GAMEPLAY;
 	levelState = LevelState::PLAYING;
+	times_checked = 0;
 }
 
 
@@ -29,36 +30,13 @@ void GamePlayScreen::build() {
 	_levels.push_back( new Level("Levels/level1.txt") );
 
 	_player = new Player();
-	_player->init(2.0f, _levels[_currenLevel]->getPlayerPosition(), &_inputManager, &_camera, "Textures/Personajes/player.png");
+	_player->init(4.0f, _levels[_currenLevel]->getPlayerPosition(), &_inputManager, &_camera, "Textures/Personajes/player.png");
 
 	_spriteBatch.init();
-
-	std::mt19937 randomEngine(time(nullptr));
-	std::uniform_int_distribution<int>randPosX(
-		2, _levels[_currenLevel]->getWidth() - 3);
-	std::uniform_int_distribution<int>randPosY(
-		2, _levels[_currenLevel]->getHeight() - 3);
-
-	for (int i = 0; i < _levels[_currenLevel]->getNumHumans(); i++)
-	{
-		_humans.push_back(new Human());
-		glm::vec2 pos(randPosX(randomEngine) * TILE_WIDTH,
-			randPosY(randomEngine) * TILE_WIDTH);
-		_humans.back()->init(0.4f, pos, "Textures/Personajes/amarillo.png");
-		_humans.back()->setUvRect(0.0f, 0.5f, 1.0f, 0.25f);
-	}
-
-	const std::vector<glm::vec2>& zombiePosition =
-		_levels[_currenLevel]->getZombiesPosition();
-
-	for (size_t i = 0; i < zombiePosition.size(); i++)
-	{
-		_zombies.push_back(new Zombie());
-		_zombies.back()->init(0.4f, zombiePosition[i], "Textures/Personajes/verde.png");
-		_zombies.back()->setUvRect(0.0f, 0.75f, 1.0f, 0.25f);
-	}
 }
 void GamePlayScreen::destroy() {
+	background = nullptr;
+	for (int i = _humans.size() - 1; i >= 0; i--) _humans[i] = nullptr;
 }
 void GamePlayScreen::onExit() {
 }
@@ -97,7 +75,7 @@ void GamePlayScreen::draw() {
 	background->draw();
 	_levels[_currenLevel]->draw();
 	_player->draw(_spriteBatch);
-	//for (Human* h : _humans) h->draw(_spriteBatch);
+	for (Human* h : _humans) h->draw(_spriteBatch);
 	drawUI();
 
 	_spriteBatch.end();
@@ -113,8 +91,8 @@ void GamePlayScreen::drawUI() {
 	Color color{ 255, 252, 187, 255 };
 	char buffer[256];
 
-	timer = unsigned long( (std::clock() - startTime) / (double)CLOCKS_PER_SEC );
-	sprintf_s(buffer, "%ds", timer);
+	timer = (std::clock() - startTime) / (double)CLOCKS_PER_SEC;
+	sprintf_s(buffer, "%ds", unsigned int(timer));
 	_spriteFont->draw(_spriteBatch, buffer,
 		_camera.getPosition() + glm::vec2(-_window->getScreenWidth() / 2 + 24, _window->getScreenHeight() / 2 - 48),
 		glm::vec2(1), 0.0f, color);
@@ -125,45 +103,52 @@ void GamePlayScreen::drawUI() {
 		glm::vec2(1), 0.0f, color);
 }
 
+void GamePlayScreen::spamEnemy()
+{
+	std::mt19937 randomEngine(time(nullptr));
+	std::uniform_int_distribution<int>randPosX(
+		2, _levels[_currenLevel]->getWidth() - 3);
+	std::uniform_int_distribution<int>randPosY(
+		2, _levels[_currenLevel]->getHeight() - 3);
+
+	//rango de error 0.005
+	if (timer < unsigned int(timer) + 0.005 && unsigned int(timer) % 2 == 0) {
+		Human* h = new Human();
+		glm::vec2 pos(randPosX(randomEngine) * TILE_WIDTH,
+			randPosY(randomEngine) * TILE_WIDTH);
+		std::string color = "";
+		switch (rand() % 3)
+		{
+			case 0: color = "Textures/Personajes/amarillo.png"; break;
+			case 1: color = "Textures/Personajes/rojo.png"; break;
+			case 2: color = "Textures/Personajes/verde.png"; break;
+			default: cout << "fuera" << endl; break;
+		}
+		h->init(0.4f, pos, color);
+		_humans.push_back(h);
+		times_checked += 1;
+		//sin el margen de error, en 8 segundos entró 486 veces
+	}
+	//entra varias veces a este if, intento reducir ello
+}
+
 void GamePlayScreen::update() {
 	checkInput();
 	draw();
 	_camera.update();
 	updateAgents();
 	//_inputManager.update();// ya hace este update en el Game::run
+	spamEnemy();
 	_camera.setPosition(_player->getPosition());
 }
 
 void GamePlayScreen::updateAgents() {
-	_player->update(_levels[_currenLevel]->getLevelData(),
-		_humans, _zombies);
+	_player->update(_levels[_currenLevel]->getLevelData(), _humans);
 
 	for (size_t i = 0; i < _humans.size(); i++)
 	{
-
-		_humans[i]->update(_levels[_currenLevel]->getLevelData(),
-			_humans, _zombies);
-	}
-
-	for (size_t i = 0; i < _zombies.size(); i++)
-	{
-		_zombies[i]->update(_levels[_currenLevel]->getLevelData(),
-			_humans, _zombies);
-
-		if (_zombies[i]->collideWithAgent(_player)) levelState = LevelState::LOST;
-
-		for (size_t j = 0; j < _humans.size(); j++)
-		{
-			if (_zombies[i]->collideWithAgent(_humans[j])) {
-				_zombies.push_back(new Zombie);
-				_zombies.back()->init(0.4f, _humans[j]->getPosition(), "Textures/Personajes/verde.png");
-				_zombies.back()->setUvRect(0.0f, 0.75f, 1.0f, 0.25f);
-
-				delete _humans[j];
-				_humans[j] = _humans.back();
-				_humans.pop_back();
-			}
-		}
+		if (_humans[i]->collideWithAgent(_player)) levelState = LevelState::LOST;
+		_humans[i]->update(_levels[_currenLevel]->getLevelData(), _humans);
 	}
 }
 

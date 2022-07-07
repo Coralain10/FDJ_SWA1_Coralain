@@ -5,8 +5,6 @@
 #include "GLTexture.h"
 #include "Sprite.h"
 
-
-class Zombie;
 class Human;
 
 const float AGENT_WIDTH = 64.0f;
@@ -23,8 +21,7 @@ protected:
 public:
 	Agent();
 	virtual void update(const std::vector<std::string>& levelData,
-						std::vector<Human*>& humans,
-						std::vector<Zombie*>& zombies) = 0;
+						std::vector<Human*>& humans) = 0;
 	bool collideWithLevel(const std::vector<std::string>& levelData);
 	virtual ~Agent();
 	bool collideWithAgent(Agent* agent);

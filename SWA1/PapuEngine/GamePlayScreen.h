@@ -25,7 +25,8 @@ class GamePlayScreen : public IGameScreen
 {
 private:
 	std::clock_t startTime;
-	unsigned long timer;
+	double timer;
+	int times_checked;
 	int puntaje;
 	GLS_Program _program;
 	Camera2D _camera;
@@ -36,13 +37,9 @@ private:
 	SpriteFont* _spriteFont;
 	vector<Level*> _levels;
 	vector<Human*>  _humans;
-	vector<Zombie*> _zombies;
 	Background* background;
 	Button* backButton;
 	Player* _player;
-	Key* _key;
-	Door* _door;
-	Portal* _portal;
 	LevelState levelState;
 	int _currenLevel;
 	void updateAgents();
@@ -62,5 +59,6 @@ public:
 
 	void checkInput();
 	void drawUI();
+	void spamEnemy();
 };
 
