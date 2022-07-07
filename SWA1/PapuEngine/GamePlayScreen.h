@@ -7,17 +7,12 @@
 #include "GLS_Program.h"
 #include "Window.h"
 #include "GLTexture.h"
-#include "Portal.h"
 #include "SpriteBacth.h"
 #include "SpriteFont.h"
 #include "Level.h"
-#include "Zombie.h"
 #include "Player.h"
 #include "Human.h"
 #include "Background.h"
-#include "Key.h"
-#include "Door.h"
-#include "Button.h"
 
 enum class LevelState { WON, LOST, FINISHED, PLAYING, PAUSE };
 
@@ -38,7 +33,6 @@ private:
 	vector<Level*> _levels;
 	vector<Human*>  _humans;
 	Background* background;
-	Button* backButton;
 	Player* _player;
 	LevelState levelState;
 	int _currenLevel;

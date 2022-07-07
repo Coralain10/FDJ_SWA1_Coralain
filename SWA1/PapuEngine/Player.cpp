@@ -38,42 +38,6 @@ void Player::update(const std::vector<std::string>& levelData,
 	collideWithLevel(levelData);
 }
 
-bool Player::collideWithKey(Key* key) {
-	glm::vec2 centerPosA = _position +
-		glm::vec2(SPRITE_WIDTH / 2);
-	glm::vec2 centerPosB = key->getPosition() +
-		glm::vec2(SPRITE_WIDTH / 2);
-	glm::vec2 dist = centerPosA - centerPosB;
-	const float MIN_DISTANCE = SPRITE_RADIUS * 2;
-	float distance = glm::length(dist);
-	float collisionDepth = MIN_DISTANCE - distance;
-	if (collisionDepth > 0) {
-		glm::vec2 collisionDepthVec =
-			glm::normalize(dist) * collisionDepth;
-		_position += collisionDepthVec / 2.0f;
-		return true;
-	}
-	return false;
-}
-
-bool Player::collideWithPortal(Portal* portal) {
-	glm::vec2 centerPosA = _position +
-		glm::vec2(SPRITE_WIDTH / 2);
-	glm::vec2 centerPosB = portal->getPosition() +
-		glm::vec2(SPRITE_WIDTH / 2);
-	glm::vec2 dist = centerPosA - centerPosB;
-	const float MIN_DISTANCE = SPRITE_RADIUS * 2;
-	float distance = glm::length(dist);
-	float collisionDepth = MIN_DISTANCE - distance;
-	if (collisionDepth > 0) {
-		glm::vec2 collisionDepthVec =
-			glm::normalize(dist) * collisionDepth;
-		_position += collisionDepthVec / 2.0f;
-		return true;
-	}
-	return false;
-}
-
 
 Player::Player():_currentGun(-1)
 {
