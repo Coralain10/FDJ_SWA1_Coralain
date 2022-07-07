@@ -37,6 +37,7 @@ void GamePlayScreen::build() {
 void GamePlayScreen::destroy() {
 	background = nullptr;
 	for (int i = _enemys.size() - 1; i >= 0; i--) _enemys[i] = nullptr;
+	//TO DO: ESCRIBIR ARCHIVO CON PUNTAJE
 }
 void GamePlayScreen::onExit() {
 }

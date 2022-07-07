@@ -13,6 +13,7 @@ class GameOverScreen : public IGameScreen
 protected:
 	int _screenIndex = 0;
 private:
+	int puntaje;
 	GLS_Program _program;
 	Window* _window = nullptr;
 	SpriteBacth _spriteBatch;

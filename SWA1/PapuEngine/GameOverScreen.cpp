@@ -5,6 +5,7 @@
 GameOverScreen::GameOverScreen(Window* window) :_window(window)
 {
 	_screenIndex = SCREEN_INDEX_GAME_OVER;
+	//TO DO: LEER ARCHIVO CON PUNTAJE
 }
 
 GameOverScreen::~GameOverScreen()
@@ -59,17 +60,12 @@ void GameOverScreen::draw()
 	_spriteBatch.begin();
 
 	background->draw();
+
+	Color color{ 255, 252, 187, 255 };
 	char buffer[256];
-	sprintf_s(buffer, "HOLA %d", 100);
-	Color color;
-	color.r = 255;
-	color.g = 0;
-	color.b = 0;
-	color.a = 255;
+	sprintf_s(buffer, "Obtuviste %d", 100);
 	spriteFont->draw(_spriteBatch, buffer, glm::vec2(-100, 50), glm::vec2(1), 0.0f, color);
 
-	sprintf_s(buffer, "HOLA 2 %d", 100);
-	spriteFont->draw(_spriteBatch, buffer, glm::vec2(-200, 150), glm::vec2(1), 0.0f, color);
 	_spriteBatch.end();
 	_spriteBatch.renderBatch();
 
@@ -106,8 +102,8 @@ void GameOverScreen::checkInput()
 
 		if (inputManager.isKeyPressed(SDL_BUTTON_LEFT)) {
 			//presione click;
-			glm::vec2 mouseCoords = _camera.convertScreenToWorl(inputManager.getMouseCoords());
-			std::cout << "x" << mouseCoords.x << " | y " << mouseCoords.y << endl;
+			//glm::vec2 mouseCoords = _camera.convertScreenToWorl(inputManager.getMouseCoords());
+			std::cout << "Para el otro año será :D";
 		}
 	}
 }
